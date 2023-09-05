@@ -28,3 +28,34 @@ DATA = {
 #     'ингредиент2': количество2,
 #   }
 # }
+def calculate_dish(request, dish_name):
+    if dish_name in DATA:
+        data = DATA[dish_name]
+        servings = request.GET.get('servings', None)
+
+        if servings:
+            result = dict()
+            for key, value in data.items():
+                new_value = value * int(servings)
+                result[key] = round(new_value, 1)
+            context = {
+                'dish_name': dish_name,
+                'recipe': result
+            }
+        else:
+            context = {
+                'dish_name': dish_name,
+                'recipe': data
+            }
+
+    else:
+        context = None
+
+    return render(request, template_name='calculator/index.html', context=context)
+
+
+def home(request):
+    cook_book = list(DATA.keys())
+    context = {'cook_book': cook_book}
+
+    return render(request, template_name='calculator/home.html', context=context)
